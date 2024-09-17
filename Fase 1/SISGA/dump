@@ -1,0 +1,824 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.20
+-- Dumped by pg_dump version 12.20
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+ALTER TABLE ONLY public.cursos DROP CONSTRAINT cursos_cod_coordenador_fkey;
+ALTER TABLE ONLY public.alunos DROP CONSTRAINT cpf_fk;
+ALTER TABLE ONLY public.professores DROP CONSTRAINT cpf_fk;
+ALTER TABLE ONLY public.coordenadores DROP CONSTRAINT cpf_fk;
+ALTER TABLE ONLY public.relatorios DROP CONSTRAINT cod_turma_fk;
+ALTER TABLE ONLY public.turmas DROP CONSTRAINT cod_professor_fk;
+ALTER TABLE ONLY public.historico DROP CONSTRAINT cod_disciplina_fk;
+ALTER TABLE ONLY public.turmas DROP CONSTRAINT cod_disciplina_fk;
+ALTER TABLE ONLY public.curso_disciplinas DROP CONSTRAINT cod_disciplina_fk;
+ALTER TABLE ONLY public.curso_disciplinas DROP CONSTRAINT cod_curso_fk;
+ALTER TABLE ONLY public.historico DROP CONSTRAINT cod_aluno_fk;
+ALTER TABLE ONLY public.relatorios DROP CONSTRAINT cod_aluno_fk;
+ALTER TABLE ONLY public.pessoas DROP CONSTRAINT pessoas_pk;
+ALTER TABLE ONLY public.turmas DROP CONSTRAINT cod_turma_pk;
+ALTER TABLE ONLY public.relatorios DROP CONSTRAINT cod_relatorio_pk;
+ALTER TABLE ONLY public.professores DROP CONSTRAINT cod_professor_pk;
+ALTER TABLE ONLY public.historico DROP CONSTRAINT cod_historico_pk;
+ALTER TABLE ONLY public.disciplinas DROP CONSTRAINT cod_disciplina_pk;
+ALTER TABLE ONLY public.cursos DROP CONSTRAINT cod_curso_pk;
+ALTER TABLE ONLY public.curso_disciplinas DROP CONSTRAINT cod_curso_disciplina_pk;
+ALTER TABLE ONLY public.alunos DROP CONSTRAINT cod_aluno_pk;
+ALTER TABLE ONLY public.coordenadores DROP CONSTRAINT "codCoordenador_pk";
+ALTER TABLE public.turmas ALTER COLUMN cod_turma DROP DEFAULT;
+ALTER TABLE public.relatorios ALTER COLUMN cod_relatorio DROP DEFAULT;
+ALTER TABLE public.professores ALTER COLUMN cod_professor DROP DEFAULT;
+ALTER TABLE public.historico ALTER COLUMN cod_historico DROP DEFAULT;
+ALTER TABLE public.disciplinas ALTER COLUMN cod_disciplina DROP DEFAULT;
+ALTER TABLE public.cursos ALTER COLUMN cod_curso DROP DEFAULT;
+ALTER TABLE public.curso_disciplinas ALTER COLUMN cod_curso_disciplina DROP DEFAULT;
+ALTER TABLE public.coordenadores ALTER COLUMN cod_coordenador DROP DEFAULT;
+ALTER TABLE public.alunos ALTER COLUMN cod_aluno DROP DEFAULT;
+DROP SEQUENCE public.turmas_cod_turma_seq;
+DROP TABLE public.turmas;
+DROP SEQUENCE public.relatorios_cod_relatorio_seq;
+DROP TABLE public.relatorios;
+DROP SEQUENCE public."professores_codProfessor_seq";
+DROP TABLE public.professores;
+DROP TABLE public.pessoas;
+DROP SEQUENCE public.historico_cod_historico_seq;
+DROP TABLE public.historico;
+DROP SEQUENCE public.disciplinas_cod_disciplina_seq;
+DROP TABLE public.disciplinas;
+DROP SEQUENCE public.cursos_cod_curso_seq;
+DROP TABLE public.cursos;
+DROP SEQUENCE public.curso_disciplinas_cod_curso_disciplina_seq;
+DROP TABLE public.curso_disciplinas;
+DROP SEQUENCE public."coordenadores_codCoordenador_seq";
+DROP TABLE public.coordenadores;
+DROP SEQUENCE public."alunos_codAluno_seq";
+DROP TABLE public.alunos;
+DROP SCHEMA public;
+--
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: alunos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.alunos (
+    cod_aluno integer NOT NULL,
+    cpf character varying(11) NOT NULL
+);
+
+
+ALTER TABLE public.alunos OWNER TO postgres;
+
+--
+-- Name: alunos_codAluno_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."alunos_codAluno_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."alunos_codAluno_seq" OWNER TO postgres;
+
+--
+-- Name: alunos_codAluno_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."alunos_codAluno_seq" OWNED BY public.alunos.cod_aluno;
+
+
+--
+-- Name: coordenadores; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.coordenadores (
+    cod_coordenador integer NOT NULL,
+    cpf character varying(11) NOT NULL,
+    salario real NOT NULL,
+    CONSTRAINT salario_check CHECK ((salario >= (0)::double precision))
+);
+
+
+ALTER TABLE public.coordenadores OWNER TO postgres;
+
+--
+-- Name: coordenadores_codCoordenador_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."coordenadores_codCoordenador_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."coordenadores_codCoordenador_seq" OWNER TO postgres;
+
+--
+-- Name: coordenadores_codCoordenador_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."coordenadores_codCoordenador_seq" OWNED BY public.coordenadores.cod_coordenador;
+
+
+--
+-- Name: curso_disciplinas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.curso_disciplinas (
+    cod_curso_disciplina integer NOT NULL,
+    cod_curso integer NOT NULL,
+    cod_disciplina integer NOT NULL
+);
+
+
+ALTER TABLE public.curso_disciplinas OWNER TO postgres;
+
+--
+-- Name: curso_disciplinas_cod_curso_disciplina_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.curso_disciplinas_cod_curso_disciplina_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.curso_disciplinas_cod_curso_disciplina_seq OWNER TO postgres;
+
+--
+-- Name: curso_disciplinas_cod_curso_disciplina_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.curso_disciplinas_cod_curso_disciplina_seq OWNED BY public.curso_disciplinas.cod_curso_disciplina;
+
+
+--
+-- Name: cursos; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.cursos (
+    cod_curso integer NOT NULL,
+    nome character varying(100) NOT NULL,
+    periodo character varying(1) NOT NULL,
+    credito_total integer NOT NULL,
+    cod_coordenador integer NOT NULL,
+    CONSTRAINT credito_total_check CHECK ((credito_total >= 0))
+);
+
+
+ALTER TABLE public.cursos OWNER TO postgres;
+
+--
+-- Name: cursos_cod_curso_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.cursos_cod_curso_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.cursos_cod_curso_seq OWNER TO postgres;
+
+--
+-- Name: cursos_cod_curso_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.cursos_cod_curso_seq OWNED BY public.cursos.cod_curso;
+
+
+--
+-- Name: disciplinas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.disciplinas (
+    cod_disciplina integer NOT NULL,
+    nome character varying(50) NOT NULL,
+    fase integer NOT NULL,
+    creditos integer NOT NULL,
+    CONSTRAINT creditos_check CHECK ((creditos >= 0)),
+    CONSTRAINT fase_check CHECK ((fase > 0))
+);
+
+
+ALTER TABLE public.disciplinas OWNER TO postgres;
+
+--
+-- Name: disciplinas_cod_disciplina_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.disciplinas_cod_disciplina_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.disciplinas_cod_disciplina_seq OWNER TO postgres;
+
+--
+-- Name: disciplinas_cod_disciplina_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.disciplinas_cod_disciplina_seq OWNED BY public.disciplinas.cod_disciplina;
+
+
+--
+-- Name: historico; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.historico (
+    cod_historico integer NOT NULL,
+    cod_aluno integer NOT NULL,
+    cod_disciplina integer NOT NULL,
+    nota_geral real NOT NULL,
+    frequencia_geral real NOT NULL,
+    aprovacao_final boolean NOT NULL
+);
+
+
+ALTER TABLE public.historico OWNER TO postgres;
+
+--
+-- Name: historico_cod_historico_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.historico_cod_historico_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.historico_cod_historico_seq OWNER TO postgres;
+
+--
+-- Name: historico_cod_historico_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.historico_cod_historico_seq OWNED BY public.historico.cod_historico;
+
+
+--
+-- Name: pessoas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.pessoas (
+    cpf character varying(11) NOT NULL,
+    nome character varying(100) NOT NULL,
+    sexo integer,
+    cep character varying(8),
+    email character varying(50) NOT NULL,
+    data_nascimento date NOT NULL,
+    telefone character varying(14) NOT NULL
+);
+
+
+ALTER TABLE public.pessoas OWNER TO postgres;
+
+--
+-- Name: professores; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.professores (
+    cod_professor integer NOT NULL,
+    cpf character varying(11) NOT NULL,
+    salario real NOT NULL,
+    formacao character varying(25),
+    CONSTRAINT salario_check CHECK ((salario >= (0)::double precision))
+);
+
+
+ALTER TABLE public.professores OWNER TO postgres;
+
+--
+-- Name: professores_codProfessor_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."professores_codProfessor_seq"
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."professores_codProfessor_seq" OWNER TO postgres;
+
+--
+-- Name: professores_codProfessor_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."professores_codProfessor_seq" OWNED BY public.professores.cod_professor;
+
+
+--
+-- Name: relatorios; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.relatorios (
+    cod_relatorio integer NOT NULL,
+    cod_aluno integer NOT NULL,
+    cod_turma integer NOT NULL,
+    notas real[],
+    faltas date[]
+);
+
+
+ALTER TABLE public.relatorios OWNER TO postgres;
+
+--
+-- Name: relatorios_cod_relatorio_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.relatorios_cod_relatorio_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.relatorios_cod_relatorio_seq OWNER TO postgres;
+
+--
+-- Name: relatorios_cod_relatorio_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.relatorios_cod_relatorio_seq OWNED BY public.relatorios.cod_relatorio;
+
+
+--
+-- Name: turmas; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.turmas (
+    cod_turma integer NOT NULL,
+    sala character varying(10) NOT NULL,
+    max_alunos integer NOT NULL,
+    agenta json NOT NULL,
+    cod_disciplina integer NOT NULL,
+    cod_professor integer NOT NULL,
+    CONSTRAINT max_alunos_check CHECK ((max_alunos >= 0))
+);
+
+
+ALTER TABLE public.turmas OWNER TO postgres;
+
+--
+-- Name: turmas_cod_turma_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.turmas_cod_turma_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.turmas_cod_turma_seq OWNER TO postgres;
+
+--
+-- Name: turmas_cod_turma_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.turmas_cod_turma_seq OWNED BY public.turmas.cod_turma;
+
+
+--
+-- Name: alunos cod_aluno; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alunos ALTER COLUMN cod_aluno SET DEFAULT nextval('public."alunos_codAluno_seq"'::regclass);
+
+
+--
+-- Name: coordenadores cod_coordenador; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coordenadores ALTER COLUMN cod_coordenador SET DEFAULT nextval('public."coordenadores_codCoordenador_seq"'::regclass);
+
+
+--
+-- Name: curso_disciplinas cod_curso_disciplina; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.curso_disciplinas ALTER COLUMN cod_curso_disciplina SET DEFAULT nextval('public.curso_disciplinas_cod_curso_disciplina_seq'::regclass);
+
+
+--
+-- Name: cursos cod_curso; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cursos ALTER COLUMN cod_curso SET DEFAULT nextval('public.cursos_cod_curso_seq'::regclass);
+
+
+--
+-- Name: disciplinas cod_disciplina; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.disciplinas ALTER COLUMN cod_disciplina SET DEFAULT nextval('public.disciplinas_cod_disciplina_seq'::regclass);
+
+
+--
+-- Name: historico cod_historico; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historico ALTER COLUMN cod_historico SET DEFAULT nextval('public.historico_cod_historico_seq'::regclass);
+
+
+--
+-- Name: professores cod_professor; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.professores ALTER COLUMN cod_professor SET DEFAULT nextval('public."professores_codProfessor_seq"'::regclass);
+
+
+--
+-- Name: relatorios cod_relatorio; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.relatorios ALTER COLUMN cod_relatorio SET DEFAULT nextval('public.relatorios_cod_relatorio_seq'::regclass);
+
+
+--
+-- Name: turmas cod_turma; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.turmas ALTER COLUMN cod_turma SET DEFAULT nextval('public.turmas_cod_turma_seq'::regclass);
+
+
+--
+-- Data for Name: alunos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.alunos (cod_aluno, cpf) FROM stdin;
+\.
+
+
+--
+-- Data for Name: coordenadores; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.coordenadores (cod_coordenador, cpf, salario) FROM stdin;
+\.
+
+
+--
+-- Data for Name: curso_disciplinas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.curso_disciplinas (cod_curso_disciplina, cod_curso, cod_disciplina) FROM stdin;
+\.
+
+
+--
+-- Data for Name: cursos; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.cursos (cod_curso, nome, periodo, credito_total, cod_coordenador) FROM stdin;
+\.
+
+
+--
+-- Data for Name: disciplinas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.disciplinas (cod_disciplina, nome, fase, creditos) FROM stdin;
+\.
+
+
+--
+-- Data for Name: historico; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.historico (cod_historico, cod_aluno, cod_disciplina, nota_geral, frequencia_geral, aprovacao_final) FROM stdin;
+\.
+
+
+--
+-- Data for Name: pessoas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.pessoas (cpf, nome, sexo, cep, email, data_nascimento, telefone) FROM stdin;
+\.
+
+
+--
+-- Data for Name: professores; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.professores (cod_professor, cpf, salario, formacao) FROM stdin;
+\.
+
+
+--
+-- Data for Name: relatorios; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.relatorios (cod_relatorio, cod_aluno, cod_turma, notas, faltas) FROM stdin;
+\.
+
+
+--
+-- Data for Name: turmas; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.turmas (cod_turma, sala, max_alunos, agenta, cod_disciplina, cod_professor) FROM stdin;
+\.
+
+
+--
+-- Name: alunos_codAluno_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."alunos_codAluno_seq"', 1, false);
+
+
+--
+-- Name: coordenadores_codCoordenador_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."coordenadores_codCoordenador_seq"', 1, false);
+
+
+--
+-- Name: curso_disciplinas_cod_curso_disciplina_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.curso_disciplinas_cod_curso_disciplina_seq', 1, false);
+
+
+--
+-- Name: cursos_cod_curso_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.cursos_cod_curso_seq', 1, false);
+
+
+--
+-- Name: disciplinas_cod_disciplina_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.disciplinas_cod_disciplina_seq', 1, false);
+
+
+--
+-- Name: historico_cod_historico_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.historico_cod_historico_seq', 1, false);
+
+
+--
+-- Name: professores_codProfessor_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."professores_codProfessor_seq"', 1, false);
+
+
+--
+-- Name: relatorios_cod_relatorio_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.relatorios_cod_relatorio_seq', 1, false);
+
+
+--
+-- Name: turmas_cod_turma_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.turmas_cod_turma_seq', 1, false);
+
+
+--
+-- Name: coordenadores codCoordenador_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coordenadores
+    ADD CONSTRAINT "codCoordenador_pk" PRIMARY KEY (cod_coordenador);
+
+
+--
+-- Name: alunos cod_aluno_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alunos
+    ADD CONSTRAINT cod_aluno_pk PRIMARY KEY (cod_aluno);
+
+
+--
+-- Name: curso_disciplinas cod_curso_disciplina_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.curso_disciplinas
+    ADD CONSTRAINT cod_curso_disciplina_pk PRIMARY KEY (cod_curso_disciplina);
+
+
+--
+-- Name: cursos cod_curso_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cursos
+    ADD CONSTRAINT cod_curso_pk PRIMARY KEY (cod_curso);
+
+
+--
+-- Name: disciplinas cod_disciplina_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.disciplinas
+    ADD CONSTRAINT cod_disciplina_pk PRIMARY KEY (cod_disciplina);
+
+
+--
+-- Name: historico cod_historico_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historico
+    ADD CONSTRAINT cod_historico_pk PRIMARY KEY (cod_historico);
+
+
+--
+-- Name: professores cod_professor_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.professores
+    ADD CONSTRAINT cod_professor_pk PRIMARY KEY (cod_professor);
+
+
+--
+-- Name: relatorios cod_relatorio_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.relatorios
+    ADD CONSTRAINT cod_relatorio_pk PRIMARY KEY (cod_relatorio);
+
+
+--
+-- Name: turmas cod_turma_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.turmas
+    ADD CONSTRAINT cod_turma_pk PRIMARY KEY (cod_turma);
+
+
+--
+-- Name: pessoas pessoas_pk; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.pessoas
+    ADD CONSTRAINT pessoas_pk PRIMARY KEY (cpf);
+
+
+--
+-- Name: relatorios cod_aluno_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.relatorios
+    ADD CONSTRAINT cod_aluno_fk FOREIGN KEY (cod_aluno) REFERENCES public.alunos(cod_aluno) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: historico cod_aluno_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historico
+    ADD CONSTRAINT cod_aluno_fk FOREIGN KEY (cod_aluno) REFERENCES public.alunos(cod_aluno) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: curso_disciplinas cod_curso_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.curso_disciplinas
+    ADD CONSTRAINT cod_curso_fk FOREIGN KEY (cod_curso) REFERENCES public.cursos(cod_curso) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- Name: curso_disciplinas cod_disciplina_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.curso_disciplinas
+    ADD CONSTRAINT cod_disciplina_fk FOREIGN KEY (cod_disciplina) REFERENCES public.disciplinas(cod_disciplina) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
+
+--
+-- Name: turmas cod_disciplina_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.turmas
+    ADD CONSTRAINT cod_disciplina_fk FOREIGN KEY (cod_disciplina) REFERENCES public.disciplinas(cod_disciplina) ON UPDATE CASCADE;
+
+
+--
+-- Name: historico cod_disciplina_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.historico
+    ADD CONSTRAINT cod_disciplina_fk FOREIGN KEY (cod_disciplina) REFERENCES public.disciplinas(cod_disciplina) ON UPDATE CASCADE NOT VALID;
+
+
+--
+-- Name: turmas cod_professor_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.turmas
+    ADD CONSTRAINT cod_professor_fk FOREIGN KEY (cod_professor) REFERENCES public.professores(cod_professor) ON UPDATE CASCADE NOT VALID;
+
+
+--
+-- Name: relatorios cod_turma_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.relatorios
+    ADD CONSTRAINT cod_turma_fk FOREIGN KEY (cod_turma) REFERENCES public.turmas(cod_turma) ON UPDATE CASCADE NOT VALID;
+
+
+--
+-- Name: coordenadores cpf_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.coordenadores
+    ADD CONSTRAINT cpf_fk FOREIGN KEY (cpf) REFERENCES public.pessoas(cpf) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: professores cpf_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.professores
+    ADD CONSTRAINT cpf_fk FOREIGN KEY (cpf) REFERENCES public.pessoas(cpf) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: alunos cpf_fk; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.alunos
+    ADD CONSTRAINT cpf_fk FOREIGN KEY (cpf) REFERENCES public.pessoas(cpf) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: cursos cursos_cod_coordenador_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.cursos
+    ADD CONSTRAINT cursos_cod_coordenador_fkey FOREIGN KEY (cod_coordenador) REFERENCES public.coordenadores(cod_coordenador) ON UPDATE CASCADE ON DELETE SET NULL;
+
+
+--
+-- PostgreSQL database dump complete
+--
+

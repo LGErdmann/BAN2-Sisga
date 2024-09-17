@@ -1,0 +1,79 @@
+name: sisga
+
+services:
+  postgres:
+    container_name: sisga_postgres
+    image: ${POSTGRES_IMAGE}
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      PGDATA: /data/postgres
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_INTERNAL_PORT}"
+    networks:
+      - postgres
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    container_name: sisga_pgadmin
+    image: ${PGADMIN_IMAGE}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:${PGADMIN_INTERNAL_PORT}/misc/ping"]
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 0
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    ports:
+      - "${PGADMIN_EXTERNAL_PORT}:${PGADMIN_INTERNAL_PORT}"
+    networks:
+      - postgres
+    restart: unless-stopped
+
+  api:
+    container_name: sisga_backend
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pgadmin:
+        condition: service_healthy
+    volumes:
+      - api:/backend
+    build: 
+      context: ./backend/
+      args: 
+        API_IMAGE: ${API_IMAGE}
+        API_EXTERNAL_PORT: ${API_EXTERNAL_PORT}
+    networks:
+      - postgres
+
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
+    pgadmin:
+    api:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: './backend'
+
+
