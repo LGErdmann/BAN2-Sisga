@@ -19,7 +19,7 @@ services:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 3
 
   pgadmin:
     container_name: sisga_pgadmin
@@ -27,12 +27,6 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "-O", "-", "http://localhost:${PGADMIN_INTERNAL_PORT}/misc/ping"]
-      interval: 10s
-      timeout: 10s
-      start_period: 10s
-      retries: 0
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
@@ -44,25 +38,52 @@ services:
     networks:
       - postgres
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:${PGADMIN_INTERNAL_PORT}/misc/ping"]
+      interval: 10s
+      timeout: 10s
+      start_period: 10s
+      retries: 3
 
   api:
-    container_name: sisga_backend
+    container_name: sisga_api
     depends_on:
       postgres:
         condition: service_healthy
       pgadmin:
         condition: service_healthy
     volumes:
-      - api:/backend
+      - api:/api
     build: 
-      context: ./backend/
+      context: ./api/
       args: 
         API_IMAGE: ${API_IMAGE}
-        API_EXTERNAL_PORT: ${API_EXTERNAL_PORT}
     ports:
       - "${API_EXTERNAL_PORT}:${API_INTERNAL_PORT}"
     networks:
       - postgres
+    # healthcheck:
+    #   test: ["CMD", "curl", "localhost:${API_INTERNAL_PORT}/"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 3
+
+  frontend:
+    container_name: sisga_frontend
+    # depends_on:
+    #   api:
+    #     condition: service_healthy
+    volumes:
+      - frontend:/frontend
+    build: 
+      context: ./frontend/
+      args: 
+        FRONTEND_IMAGE: ${FRONTEND_IMAGE}
+    ports:
+      - "${FRONTEND_EXTERNAL_PORT}:${FRONTEND_INTERNAL_PORT}"
+    networks:
+      - postgres
+
 
 networks:
   postgres:
@@ -76,6 +97,12 @@ volumes:
       driver_opts:
         type: 'none'
         o: 'bind'
-        device: './backend'
+        device: './api'
+    frontend:
+      driver: local
+      driver_opts:
+        type: 'none'
+        o: 'bind'
+        device: './frontend'
 
 
