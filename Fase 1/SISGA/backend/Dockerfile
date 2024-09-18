@@ -11,5 +11,5 @@ RUN apt-get update \
     && apt-get -y install libpq-dev gcc
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-EXPOSE ${API_EXTERNAL_PORT}
-CMD ["python", "test.py"]
+# EXPOSE ${API_EXTERNAL_PORT}
+CMD ["python", "app.py"]

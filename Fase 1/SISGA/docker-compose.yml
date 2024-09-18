@@ -59,6 +59,8 @@ services:
       args: 
         API_IMAGE: ${API_IMAGE}
         API_EXTERNAL_PORT: ${API_EXTERNAL_PORT}
+    ports:
+      - "${API_EXTERNAL_PORT}:${API_INTERNAL_PORT}"
     networks:
       - postgres
 
