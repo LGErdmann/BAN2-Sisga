@@ -7,4 +7,4 @@ COPY . .
 RUN apt update -y && apt upgrade -y
 RUN npm install vite
 RUN npm install
-CMD ["npm", "run", "dev"]
+CMD npm install ; npm run dev
