@@ -10,6 +10,7 @@ services:
       PGDATA: /data/postgres
     volumes:
        - postgres:/data/postgres
+       - ./dump.sql:/docker-entrypoint-initdb.d/dump.sql
     ports:
       - "${POSTGRES_EXTERNAL_PORT}:${POSTGRES_INTERNAL_PORT}"
     networks:
@@ -73,6 +74,11 @@ services:
     # depends_on:
     #   api:
     #     condition: service_healthy
+    depends_on:
+      postgres:
+        condition: service_healthy
+      pgadmin:
+        condition: service_healthy
     volumes:
       - frontend:/frontend
     build: 
