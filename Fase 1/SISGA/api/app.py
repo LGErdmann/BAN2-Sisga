@@ -159,7 +159,7 @@ def delete_professor(cod_professor):
     cursor.close()
     return jsonify({'message': 'Professor deleted successfully'})
 
-
+#
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0', port=5002)
